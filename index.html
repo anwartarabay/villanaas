@@ -57,16 +57,12 @@
 <body>
     <div class="container">
         <h1>Spotify Playlist Feedback</h1>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6K2ZjsdZxHumoucxwAbmsE?utm_source=generator" width="100%" height="352" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        
+        <!-- Spotify Playlist Embed -->
+        <iframe id="spotify-player" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6K2ZjsdZxHumoucxwAbmsE?utm_source=generator" width="100%" height="380" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         
         <h2>Select Your Preferred Songs</h2>
-        <ul class="song-list">
-            <li><input type='checkbox' value='Song 1'> Song 1 - Artist 1</li>
-            <li><input type='checkbox' value='Song 2'> Song 2 - Artist 2</li>
-            <li><input type='checkbox' value='Song 3'> Song 3 - Artist 3</li>
-            <li><input type='checkbox' value='Song 4'> Song 4 - Artist 4</li>
-            <li><input type='checkbox' value='Song 5'> Song 5 - Artist 5</li>
-        </ul>
+        <ul id="songList" class="song-list"></ul>
         
         <button onclick="savePreferences()">Save Preferences</button>
         <h3>Collected Data</h3>
@@ -74,6 +70,24 @@
     </div>
 
     <script>
+        const songs = [
+            "Song 1 - Artist 1",
+            "Song 2 - Artist 2",
+            "Song 3 - Artist 3",
+            "Song 4 - Artist 4",
+            "Song 5 - Artist 5"
+        ];
+
+        function loadSongs() {
+            const songList = document.getElementById("songList");
+            songList.innerHTML = "";
+            songs.forEach((song, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `<input type='checkbox' id='song${index}' value='${song}'> ${song}`;
+                songList.appendChild(li);
+            });
+        }
+        
         function savePreferences() {
             const preferences = [];
             document.querySelectorAll(".song-list input").forEach(input => {
@@ -81,6 +95,8 @@
             });
             document.getElementById("output").innerText = JSON.stringify(preferences, null, 2);
         }
+        
+        window.onload = loadSongs;
     </script>
 </body>
 </html>
