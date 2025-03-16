@@ -8,23 +8,65 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
         }
         .container {
-            width: 50%;
+            max-width: 600px;
             margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
         .song-list {
             text-align: left;
+            list-style: none;
+            padding: 0;
+        }
+        .song-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+        .song-list input {
+            margin-right: 10px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            border: none;
+            background: #1DB954;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #17a34a;
+        }
+        pre {
+            text-align: left;
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Spotify Playlist Feedback</h1>
     <div class="container">
-        <iframe style="border-radius:12px" src="https://open.spotify.com/playlist/6K2ZjsdZxHumoucxwAbmsE?si=s5vmeMlGTT68WRau8evYlg" width="100%" height="380" frameborder="0" allowfullscreen></iframe>
+        <h1>Spotify Playlist Feedback</h1>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6K2ZjsdZxHumoucxwAbmsE" width="100%" height="380" frameborder="0" allowfullscreen></iframe>
         
         <h2>Select Your Preferred Songs</h2>
-        <ul id="songList" class="song-list"></ul>
+        <ul class="song-list">
+            <li><input type='checkbox' value='Song 1'> Song 1 - Artist 1</li>
+            <li><input type='checkbox' value='Song 2'> Song 2 - Artist 2</li>
+            <li><input type='checkbox' value='Song 3'> Song 3 - Artist 3</li>
+            <li><input type='checkbox' value='Song 4'> Song 4 - Artist 4</li>
+            <li><input type='checkbox' value='Song 5'> Song 5 - Artist 5</li>
+        </ul>
         
         <button onclick="savePreferences()">Save Preferences</button>
         <h3>Collected Data</h3>
@@ -32,32 +74,13 @@
     </div>
 
     <script>
-        const songs = [
-            { id: 1, name: "Song 1" },
-            { id: 2, name: "Song 2" },
-            { id: 3, name: "Song 3" },
-            { id: 4, name: "Song 4" }
-        ];
-        
-        function loadSongs() {
-            const songList = document.getElementById("songList");
-            songs.forEach(song => {
-                const li = document.createElement("li");
-                li.innerHTML = `<input type='checkbox' id='song${song.id}' value='${song.name}'> ${song.name}`;
-                songList.appendChild(li);
-            });
-        }
-        
         function savePreferences() {
             const preferences = [];
-            songs.forEach(song => {
-                const checkbox = document.getElementById(`song${song.id}`);
-                preferences.push({ song: song.name, liked: checkbox.checked });
+            document.querySelectorAll(".song-list input").forEach(input => {
+                preferences.push({ song: input.value, liked: input.checked });
             });
             document.getElementById("output").innerText = JSON.stringify(preferences, null, 2);
         }
-        
-        window.onload = loadSongs;
     </script>
 </body>
 </html>
