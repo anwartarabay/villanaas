@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Playlist Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+        }
+        .song-list {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Spotify Playlist Feedback</h1>
+    <div class="container">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/playlist/6K2ZjsdZxHumoucxwAbmsE?si=s5vmeMlGTT68WRau8evYlg" width="100%" height="380" frameborder="0" allowfullscreen></iframe>
+        
+        <h2>Select Your Preferred Songs</h2>
+        <ul id="songList" class="song-list"></ul>
+        
+        <button onclick="savePreferences()">Save Preferences</button>
+        <h3>Collected Data</h3>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        const songs = [
+            { id: 1, name: "Song 1" },
+            { id: 2, name: "Song 2" },
+            { id: 3, name: "Song 3" },
+            { id: 4, name: "Song 4" }
+        ];
+        
+        function loadSongs() {
+            const songList = document.getElementById("songList");
+            songs.forEach(song => {
+                const li = document.createElement("li");
+                li.innerHTML = `<input type='checkbox' id='song${song.id}' value='${song.name}'> ${song.name}`;
+                songList.appendChild(li);
+            });
+        }
+        
+        function savePreferences() {
+            const preferences = [];
+            songs.forEach(song => {
+                const checkbox = document.getElementById(`song${song.id}`);
+                preferences.push({ song: song.name, liked: checkbox.checked });
+            });
+            document.getElementById("output").innerText = JSON.stringify(preferences, null, 2);
+        }
+        
+        window.onload = loadSongs;
+    </script>
+</body>
+</html>
