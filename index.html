@@ -7,20 +7,30 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             background-color: #f4f4f4;
             padding: 20px;
+            display: flex;
+            justify-content: center;
         }
         .container {
-            max-width: 600px;
-            margin: auto;
+            display: flex;
+            flex-direction: row;
+            max-width: 900px;
+            width: 100%;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
-        .song-list {
+        .left-panel {
+            width: 50%;
+            padding-right: 20px;
+        }
+        .right-panel {
+            width: 50%;
             text-align: left;
+        }
+        .song-list {
             list-style: none;
             padding: 0;
         }
@@ -42,6 +52,8 @@
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
+            display: block;
+            width: 100%;
         }
         button:hover {
             background: #17a34a;
@@ -56,21 +68,23 @@
 </head>
 <body>
     <div class="container">
-        <h1>Spotify Playlist Feedback</h1>
+        <div class="left-panel">
+            <h1>Spotify Playlist</h1>
+            <iframe id="spotify-player" style="border-radius:12px" 
+                    src="https://open.spotify.com/embed/playlist/6K2ZjsdZxHumoucxwAbmsE?utm_source=generator" 
+                    width="100%" height="500" frameborder="0" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"></iframe>
+        </div>
         
-        <!-- Spotify Playlist Embed -->
-        <iframe id="spotify-player" style="border-radius:12px" 
-                src="https://open.spotify.com/embed/playlist/6K2ZjsdZxHumoucxwAbmsE?utm_source=generator" 
-                width="100%" height="380" frameborder="0" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                loading="lazy"></iframe>
-        
-        <h2>Select Your Preferred Songs</h2>
-        <ul id="songList" class="song-list"></ul>
-        
-        <button onclick="savePreferences()">Save Preferences</button>
-        <h3>Collected Data</h3>
-        <pre id="output"></pre>
+        <div class="right-panel">
+            <h2>Select Your Preferred Songs</h2>
+            <ul id="songList" class="song-list"></ul>
+            
+            <button onclick="savePreferences()">Save Preferences</button>
+            <h3>Collected Data</h3>
+            <pre id="output"></pre>
+        </div>
     </div>
 
     <script>
@@ -80,12 +94,10 @@
         async function getSpotifyToken() {
             const storedToken = JSON.parse(localStorage.getItem("spotify_token"));
             
-            // If token exists and is still valid, use it
             if (storedToken && Date.now() < storedToken.expiryTime) {
                 return storedToken.token;
             }
 
-            // If token is expired or doesn't exist, request a new one
             try {
                 const response = await fetch("https://accounts.spotify.com/api/token", {
                     method: "POST",
@@ -97,7 +109,7 @@
 
                 const data = await response.json();
                 if (data.access_token) {
-                    const expiryTime = Date.now() + data.expires_in * 1000; // Convert seconds to milliseconds
+                    const expiryTime = Date.now() + data.expires_in * 1000;
                     localStorage.setItem("spotify_token", JSON.stringify({ token: data.access_token, expiryTime }));
                     return data.access_token;
                 }
@@ -144,7 +156,13 @@
             document.querySelectorAll(".song-list input").forEach(input => {
                 preferences.push({ song: input.value, liked: input.checked });
             });
+            
+            // Store the data in local storage
+            localStorage.setItem("user_preferences", JSON.stringify(preferences));
+            
+            // Display saved preferences
             document.getElementById("output").innerText = JSON.stringify(preferences, null, 2);
+            alert("Your preferences have been saved!");
         }
 
         window.onload = fetchPlaylist;
